@@ -1,0 +1,16 @@
+{
+  "tempat_sampah": {
+    "BIN-001": {
+      "id": 1,
+      "status": "Penuh",
+      "lokasi": "Jakarta",
+      "harga": 5000
+    },
+    "BIN-002": {
+      "id": 2,
+      "status": "Kosong",
+      "lokasi": "Bandung",
+      "harga": 0
+    }
+  }
+}

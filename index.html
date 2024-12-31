@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Tempat Sampah</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #f4f4f9;
+        color: #333;
+      }
+
+      header {
+        background-color: #007bff;
+        color: #fff;
+        padding: 1rem;
+        text-align: center;
+      }
+
+      .container {
+        max-width: 800px;
+        margin: 2rem auto;
+        background: #fff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      }
+
+      h1 {
+        text-align: center;
+        color: #007bff;
+      }
+
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 2rem;
+      }
+
+      th,
+      td {
+        padding: 1rem;
+        text-align: left;
+        border: 1px solid #ddd;
+      }
+
+      th {
+        background-color: #007bff;
+        color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>Manajemen Tempat Sampah</h1>
+    </header>
+
+    <div class="container">
+      <h2>Data Tempat Sampah</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Status</th>
+            <th>Lokasi</th>
+            <th>Harga</th>
+          </tr>
+        </thead>
+        <tbody id="binTable">
+          <!-- Data akan dimasukkan di sini -->
+        </tbody>
+      </table>
+    </div>
+
+    <script type="module">
+      import { initializeApp } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-app.js";
+      import {
+        getDatabase,
+        ref,
+        onValue,
+      } from "https://www.gstatic.com/firebasejs/9.17.1/firebase-database.js";
+
+      // Konfigurasi Firebase
+      const firebaseConfig = {
+        apiKey: "AIzaSyDj9hmtm_yc2rNumFy2BrU0QbCkVK8w",
+        authDomain: "binovation-project.firebaseapp.com",
+        databaseURL: "https://binovation-project-default-rtdb.firebaseio.com",
+        projectId: "binovation-project",
+        storageBucket: "binovation-project.firebasestorage.app",
+        messagingSenderId: "334390097852",
+        appId: "1:334390097852:web:aff29cda1b9641084a1db9",
+        measurementId: "G-W8P317J4PQ",
+      };
+
+      // Inisialisasi Firebase
+      const app = initializeApp(firebaseConfig);
+      const database = getDatabase(app);
+
+      // Minta izin notifikasi
+      if ("Notification" in window && Notification.permission !== "granted") {
+        Notification.requestPermission().then((permission) => {
+          if (permission === "granted") {
+            console.log("Notifikasi diizinkan oleh pengguna.");
+          } else {
+            console.log("Notifikasi tidak diizinkan.");
+          }
+        });
+      }
+
+      // Referensi ke database
+      const dbRef = ref(database, "tempat_sampah/");
+
+      // Membaca data dari database
+      const binTable = document.getElementById("binTable");
+      onValue(dbRef, (snapshot) => {
+        binTable.innerHTML = ""; // Bersihkan tabel
+        const data = snapshot.val();
+        for (const id in data) {
+          const row = `<tr>
+      <td>${id}</td>
+      <td>${data[id].status}</td>
+      <td>${data[id].lokasi}</td>
+      <td>${data[id].harga}</td>
+    </tr>`;
+          binTable.innerHTML += row;
+
+          // Tampilkan alert jika status "Penuh"
+          if (data[id].status === "Penuh") {
+            alert(`Tempat sampah di ${data[id].lokasi} sudah penuh.`);
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
